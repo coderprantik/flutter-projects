@@ -1,0 +1,13 @@
+{
+    "surahNumber": 1,
+    "ayahNumber": 2,
+    "surahName": "surahName",
+    "surahNameTranslation": "surahNameTranslation",
+    "revelationType": "revelationType",
+    "sajda": false,
+    "identifier": "identifier",
+    "type": "type",
+    "editionName": "editionName",
+    "text": "text",
+    "direction": "direction"
+}

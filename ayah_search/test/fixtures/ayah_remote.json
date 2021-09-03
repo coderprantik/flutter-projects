@@ -1,0 +1,32 @@
+{
+    "code": 200,
+    "status": "OK",
+    "data": {
+        "number": 2,
+        "text": "text",
+        "edition": {
+            "identifier": "identifier",
+            "language": "en",
+            "name": "Asad",
+            "englishName": "editionName",
+            "format": "text",
+            "type": "type",
+            "direction": "direction"
+        },
+        "surah": {
+            "number": 1,
+            "name": "سُورَةُ البَقَرَةِ",
+            "englishName": "surahName",
+            "englishNameTranslation": "surahNameTranslation",
+            "numberOfAyahs": 286,
+            "revelationType": "revelationType"
+        },
+        "numberInSurah": 2,
+        "juz": 3,
+        "manzil": 1,
+        "page": 42,
+        "ruku": 35,
+        "hizbQuarter": 17,
+        "sajda": false
+    }
+}
