@@ -1,10 +1,27 @@
-import 'package:ayah_search/core/network/network_info.dart';
-import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_remote_data_source.dart';
-import 'package:mockito/annotations.dart';
+import 'package:ayah_search/features/ayah_search/data/repositories/ayah_search_repository_impl.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-@GenerateMocks([
+import 'ayah_search_reposiotory_impl_test.mocks.dart';
+
+/* @GenerateMocks([
   AyahSearchRemoteDataSource,
-  AyahSearchRemoteDataSource,
+  AyahSearchLocalDataSource,
   NetworkInfo,
-])
-void main() {}
+]) */
+void main() {
+  late MockAyahSearchRemoteDataSource mockRemoteDataSource;
+  late MockAyahSearchLocalDataSource mocklocalDataSource;
+  late MockNetworkInfo mockNetworkInfo;
+  late AyahSearchRepositoryImpl repository;
+
+  setUp(() {
+    mockRemoteDataSource = MockAyahSearchRemoteDataSource();
+    mocklocalDataSource = MockAyahSearchLocalDataSource();
+    mockNetworkInfo = MockNetworkInfo();
+    repository = AyahSearchRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      localDataSource: mocklocalDataSource,
+      networkInfo: mockNetworkInfo,
+    );
+  });
+}
