@@ -1,4 +1,4 @@
-import 'package:ayah_search/core/error/failure.dart';
+import 'package:ayah_search/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class Usecase<Type, Param> {

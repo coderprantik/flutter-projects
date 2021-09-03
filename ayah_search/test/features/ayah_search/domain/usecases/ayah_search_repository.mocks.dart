@@ -4,7 +4,7 @@
 
 import 'dart:async' as _i4;
 
-import 'package:ayah_search/core/error/failure.dart' as _i5;
+import 'package:ayah_search/core/error/failures.dart' as _i5;
 import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart'
     as _i6;
 import 'package:ayah_search/features/ayah_search/domain/repositories/ayah_search_repository.dart'
