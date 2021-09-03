@@ -33,12 +33,24 @@ void main() {
 
   group('fromJson', () {
     final json = jsonDecode(remoteRawJson);
-    
+
     test(
       'should return AyahModel from JSON Map',
       () async {
         // act
         final result = AyahModel.fromJson(json);
+        // assert
+        expect(result, tAyahModel);
+      },
+    );
+
+    test(
+      'should return AyahModel from Raw JSON',
+      () async {
+        // arrange
+
+        // act
+        final result = AyahModel.fromRawJson(remoteRawJson);
         // assert
         expect(result, tAyahModel);
       },

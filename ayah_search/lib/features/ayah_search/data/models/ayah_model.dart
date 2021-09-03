@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
 
 class AyahModel extends Ayah {
@@ -71,5 +73,9 @@ class AyahModel extends Ayah {
       direction: edition['direction'],
       text: json['text'],
     );
+  }
+
+  factory AyahModel.fromRawJson(String jsonString) {
+    return AyahModel.fromJson(json.decode(jsonString));
   }
 }
