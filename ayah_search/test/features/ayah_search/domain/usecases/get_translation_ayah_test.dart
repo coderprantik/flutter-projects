@@ -33,13 +33,18 @@ void main() {
     'should get translation Ayah for the query from repository',
     () async {
       // arrange
-      when(mockAyahSearchRepository.getTranslationAyah(tQuery))
-          .thenAnswer((_) async => Right(tAyah));
+      when(mockAyahSearchRepository.getTranslationAyah(
+        query: anyNamed("query"),
+        identifier: anyNamed("identifier"),
+      )).thenAnswer((_) async => Right(tAyah));
       // act
-      final result = await usecase(tQuery);
+      final result = await usecase(Params(query: tQuery));
       // assert
       expect(result, Right(tAyah));
-      verify(mockAyahSearchRepository.getTranslationAyah(tQuery));
+      verify(mockAyahSearchRepository.getTranslationAyah(
+        query: tQuery,
+        identifier: IDENTIFIER_BN,
+      ));
       verifyNoMoreInteractions(mockAyahSearchRepository);
     },
   );
