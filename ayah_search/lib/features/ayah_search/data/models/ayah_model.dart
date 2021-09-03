@@ -78,4 +78,22 @@ class AyahModel extends Ayah {
   factory AyahModel.fromRawJson(String jsonString) {
     return AyahModel.fromJson(json.decode(jsonString));
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "surahNumber": surahNumber,
+      "ayahNumber": ayahNumber,
+      "surahName": surahName,
+      "surahNameTranslation": surahNameTranslation,
+      "revelationType": revelationType,
+      "sajda": sajda,
+      "identifier": identifier,
+      "type": type,
+      "editionName": editionName,
+      "text": text,
+      "direction": direction,
+    };
+  }
+
+  String toRawJson() => jsonEncode(toJson());
 }

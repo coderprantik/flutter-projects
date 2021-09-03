@@ -47,10 +47,22 @@ void main() {
     test(
       'should return a valid model from Raw JSON',
       () async {
-       // act
+        // act
         final result = AyahModel.fromRawJson(remoteJsonString);
         // assert
         expect(result, tAyahModel);
+      },
+    );
+  });
+
+  group('toJson', () {
+    test(
+      'should return a valid JSON Map with proper data ',
+      () async {
+        // act
+        final result = tAyahModel.toJson();
+        // assert
+        expect(result, jsonDecode(cachedJsonString));
       },
     );
   });
