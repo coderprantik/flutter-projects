@@ -20,11 +20,11 @@ void main() {
     direction: "direction",
     text: "text",
   );
-  final cachedrawJson = fixture('ayah_cached.json');
-  final remoteRawJson = fixture('ayah_remote.json');
+  final cachedJsonString = fixture('ayah_cached.json');
+  final remoteJsonString = fixture('ayah_remote.json');
 
   test(
-    'should AyahModel be a sub class of Ayah',
+    'should be a sub class of Ayah entity',
     () async {
       // assert
       expect(tAyahModel, isA<Ayah>());
@@ -32,25 +32,23 @@ void main() {
   );
 
   group('fromJson', () {
-    final json = jsonDecode(remoteRawJson);
+    final jsonMap = jsonDecode(remoteJsonString);
 
     test(
-      'should return AyahModel from JSON Map',
+      'should return a valid model from JSON Map',
       () async {
         // act
-        final result = AyahModel.fromJson(json);
+        final result = AyahModel.fromJson(jsonMap);
         // assert
         expect(result, tAyahModel);
       },
     );
 
     test(
-      'should return AyahModel from Raw JSON',
+      'should return a valid model from Raw JSON',
       () async {
-        // arrange
-
-        // act
-        final result = AyahModel.fromRawJson(remoteRawJson);
+       // act
+        final result = AyahModel.fromRawJson(remoteJsonString);
         // assert
         expect(result, tAyahModel);
       },
