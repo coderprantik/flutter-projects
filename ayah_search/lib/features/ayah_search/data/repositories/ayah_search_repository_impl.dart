@@ -1,3 +1,4 @@
+import 'package:ayah_search/core/error/exceptions.dart';
 import 'package:ayah_search/core/network/network_info.dart';
 import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_local_data_source.dart';
 import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_remote_data_source.dart';
@@ -18,15 +19,44 @@ class AyahSearchRepositoryImpl implements AyahSearchRepository {
   });
 
   @override
-  Future<Either<Failure, Ayah>> getArabicAyah(String query) {
-    // TODO: implement getArabicAyah
-    throw UnimplementedError();
+  Future<Either<Failure, Ayah>> getArabicAyah(String query) async {
+    if (await localDataSource.hasAyah(query)) {
+      try {
+        final ayah = await localDataSource.getArabicAyah(query);
+        return Right(ayah);
+      } on CacheException {
+        return Left(CacheFailure());
+      }
+    } else {
+      if (await networkInfo.hasConnection) {
+        try {
+          final ayah = await remoteDataSource.getArabicAyah(query);
+          localDataSource.cacheAyah(ayah);
+          return Right(ayah);
+        } on ServerException {
+          return Left(ServerFailure());
+        }
+      } else {
+        return Left(CacheFailure());
+      }
+    }
   }
 
   @override
   Future<Either<Failure, Ayah>> getTranslationAyah(
-      {required String query, required String identifier}) {
-    // TODO: implement getTranslationAyah
-    throw UnimplementedError();
+      {required String query, required String identifier}) async {
+    // return a mock Ayah
+    return Right(Ayah(
+      surahNumber: 1,
+      ayahNumber: 2,
+      surahName: "surahName",
+      surahNameTranslation: 'surahNameTranslation',
+      revelationType: 'revelationType',
+      sajda: false,
+      type: 'type',
+      editionName: 'editionName',
+      direction: 'direction',
+      text: 'text',
+    ));
   }
 }

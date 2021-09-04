@@ -77,6 +77,10 @@ class MockAyahSearchLocalDataSource extends _i1.Mock
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
+  _i4.Future<bool> hasAyah(String? query) =>
+      (super.noSuchMethod(Invocation.method(#hasAyah, [query]),
+          returnValue: Future<bool>.value(false)) as _i4.Future<bool>);
+  @override
   String toString() => super.toString();
 }
 

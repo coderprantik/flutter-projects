@@ -9,4 +9,6 @@ abstract class AyahSearchLocalDataSource {
   });
 
   Future<void> cacheAyah(AyahModel ayahModel);
+
+  Future<bool> hasAyah(String query);
 }
