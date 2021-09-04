@@ -25,7 +25,7 @@ class AyahSearchRepositoryImpl implements AyahSearchRepository {
         final ayah = await localDataSource.getArabicAyah(query);
         return Right(ayah);
       } on CacheException {
-        return Left(CacheFailure());
+        print('localDataSource.getArabicAyah: CacheException');
       }
     } else {
       if (await networkInfo.hasConnection) {
@@ -36,15 +36,22 @@ class AyahSearchRepositoryImpl implements AyahSearchRepository {
         } on ServerException {
           return Left(ServerFailure());
         }
-      } else {
-        return Left(CacheFailure());
       }
     }
+    return Left(CacheFailure());
   }
 
   @override
   Future<Either<Failure, Ayah>> getTranslationAyah(
       {required String query, required String identifier}) async {
+    if (await localDataSource.hasAyah(query)) {
+      final ayah = await localDataSource.getTranslationAyah(
+        query: query,
+        identifier: identifier,
+      );
+      return Right(ayah);
+    }
+
     // return a mock Ayah
     return Right(Ayah(
       surahNumber: 1,

@@ -1,3 +1,4 @@
+import 'package:ayah_search/features/ayah_search/domain/usecases/get_translation_ayah.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -111,3 +112,5 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+String currentIdentifier = IDENTIFIER_BN;
