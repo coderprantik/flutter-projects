@@ -181,8 +181,15 @@ void main() {
   });
 
   group('getTranslationAyah', () {
-    void setGetTranslationAyahSuccessful() {
+    void setGetTranslationAyahLocalSuccessful() {
       when(mockLocalDataSource.getTranslationAyah(
+        query: anyNamed('query'),
+        identifier: anyNamed('identifier'),
+      )).thenAnswer((_) async => tAyahModel);
+    }
+
+    void setGetTranslationAyahRemoteSuccessful() {
+      when(mockRemoteDataSource.getTranslationAyah(
         query: anyNamed('query'),
         identifier: anyNamed('identifier'),
       )).thenAnswer((_) async => tAyahModel);
@@ -193,7 +200,7 @@ void main() {
       () async {
         // arrange
         when(mockLocalDataSource.hasAyah(any)).thenAnswer((_) async => true);
-        setGetTranslationAyahSuccessful();
+        setGetTranslationAyahLocalSuccessful();
         // act
         await repository.getTranslationAyah(
           query: tQuery,
@@ -209,7 +216,7 @@ void main() {
       () async {
         // arrange
         when(mockLocalDataSource.hasAyah(any)).thenAnswer((_) async => true);
-        setGetTranslationAyahSuccessful();
+        setGetTranslationAyahLocalSuccessful();
         // act
         final result = await repository.getTranslationAyah(
           query: tQuery,
@@ -235,7 +242,10 @@ void main() {
           ),
         ).thenThrow(CacheException());
         // act
-        final result = await repository.getArabicAyah(tQuery);
+        final result = await repository.getTranslationAyah(
+          query: tQuery,
+          identifier: currentIdentifier,
+        );
         // assert
         expect(result, equals(Left(CacheFailure())));
       },
@@ -247,10 +257,12 @@ void main() {
         () async {
           // arrange
           when(mockNetworkInfo.hasConnection).thenAnswer((_) async => true);
-          when(mockRemoteDataSource.getArabicAyah(any)) // else MissingStubError
-              .thenAnswer((_) async => tAyahModel);
+          setGetTranslationAyahRemoteSuccessful();
           // act
-          await repository.getArabicAyah(tQuery);
+          await repository.getTranslationAyah(
+            query: tQuery,
+            identifier: currentIdentifier,
+          );
           // assert
           verify(mockNetworkInfo.hasConnection);
         },
@@ -262,9 +274,13 @@ void main() {
           // arrange
           when(mockNetworkInfo.hasConnection).thenAnswer((_) async => false);
           // act
-          final result = await repository.getArabicAyah(tQuery);
+          final result = await repository.getTranslationAyah(
+            query: tQuery,
+            identifier: currentIdentifier,
+          );
           // assert
           expect(result, Left(CacheFailure()));
+          verifyZeroInteractions(mockRemoteDataSource);
         },
       );
 
@@ -273,13 +289,21 @@ void main() {
           'should return remote data when the call reomote data sourse is successful',
           () async {
             // arrange
-            when(mockRemoteDataSource.getArabicAyah(any))
-                .thenAnswer((_) async => tAyahModel);
+            when(mockRemoteDataSource.getTranslationAyah(
+              query: anyNamed('query'),
+              identifier: anyNamed('identifier'),
+            )).thenAnswer((_) async => tAyahModel);
             // act
-            final result = await repository.getArabicAyah(tQuery);
+            final result = await repository.getTranslationAyah(
+              query: tQuery,
+              identifier: currentIdentifier,
+            );
             // assert
             expect(result, equals(Right(tAyah)));
-            verify(mockRemoteDataSource.getArabicAyah(tQuery));
+            verify(mockRemoteDataSource.getTranslationAyah(
+              query: tQuery,
+              identifier: currentIdentifier,
+            ));
           },
         );
 
@@ -287,10 +311,15 @@ void main() {
           'should cache the data locally when the call remote data is successful',
           () async {
             // arrange
-            when(mockRemoteDataSource.getArabicAyah(any))
-                .thenAnswer((_) async => tAyahModel);
+            when(mockRemoteDataSource.getTranslationAyah(
+              query: anyNamed('query'),
+              identifier: anyNamed('identifier'),
+            )).thenAnswer((_) async => tAyahModel);
             // act
-            await repository.getArabicAyah(tQuery);
+            await repository.getTranslationAyah(
+              query: tQuery,
+              identifier: currentIdentifier,
+            );
             // assert
             verify(mockLocalDataSource.cacheAyah(tAyahModel));
           },
@@ -299,10 +328,15 @@ void main() {
           'should return server failure when the call remote data source is unsuccessful',
           () async {
             // arrange
-            when(mockRemoteDataSource.getArabicAyah(any))
-                .thenThrow(ServerException());
+            when(mockRemoteDataSource.getTranslationAyah(
+              query: anyNamed('query'),
+              identifier: anyNamed('identifier'),
+            )).thenThrow(ServerException());
             // act
-            final result = await repository.getArabicAyah(tQuery);
+            final result = await repository.getTranslationAyah(
+              query: tQuery,
+              identifier: currentIdentifier,
+            );
             // assert
             expect(result, equals(Left(ServerFailure())));
           },

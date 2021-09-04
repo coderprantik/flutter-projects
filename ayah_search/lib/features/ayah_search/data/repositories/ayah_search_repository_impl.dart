@@ -27,15 +27,13 @@ class AyahSearchRepositoryImpl implements AyahSearchRepository {
       } on CacheException {
         print('localDataSource.getArabicAyah: CacheException');
       }
-    } else {
-      if (await networkInfo.hasConnection) {
-        try {
-          final ayah = await remoteDataSource.getArabicAyah(query);
-          localDataSource.cacheAyah(ayah);
-          return Right(ayah);
-        } on ServerException {
-          return Left(ServerFailure());
-        }
+    } else if (await networkInfo.hasConnection) {
+      try {
+        final ayah = await remoteDataSource.getArabicAyah(query);
+        localDataSource.cacheAyah(ayah);
+        return Right(ayah);
+      } on ServerException {
+        return Left(ServerFailure());
       }
     }
     return Left(CacheFailure());
@@ -45,25 +43,27 @@ class AyahSearchRepositoryImpl implements AyahSearchRepository {
   Future<Either<Failure, Ayah>> getTranslationAyah(
       {required String query, required String identifier}) async {
     if (await localDataSource.hasAyah(query)) {
-      final ayah = await localDataSource.getTranslationAyah(
-        query: query,
-        identifier: identifier,
-      );
-      return Right(ayah);
+      try {
+        final ayah = await localDataSource.getTranslationAyah(
+          query: query,
+          identifier: identifier,
+        );
+        return Right(ayah);
+      } on CacheException {
+        print('getTranslationAyah: CacheException');
+      }
+    } else if (await networkInfo.hasConnection) {
+      try {
+        final ayah = await remoteDataSource.getTranslationAyah(
+          query: query,
+          identifier: identifier,
+        );
+        localDataSource.cacheAyah(ayah);
+        return Right(ayah);
+      } on ServerException {
+        return Left(ServerFailure());
+      }
     }
-
-    // return a mock Ayah
-    return Right(Ayah(
-      surahNumber: 1,
-      ayahNumber: 2,
-      surahName: "surahName",
-      surahNameTranslation: 'surahNameTranslation',
-      revelationType: 'revelationType',
-      sajda: false,
-      type: 'type',
-      editionName: 'editionName',
-      direction: 'direction',
-      text: 'text',
-    ));
+    return Left(CacheFailure());
   }
 }
