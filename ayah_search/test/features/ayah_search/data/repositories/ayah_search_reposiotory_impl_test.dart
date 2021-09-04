@@ -1,7 +1,7 @@
 import 'package:ayah_search/features/ayah_search/data/repositories/ayah_search_repository_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'ayah_search_reposiotory_impl_test.mocks.dart';
+import 'ayah_search_reposiotory_impl.mocks.dart';
 
 /* @GenerateMocks([
   AyahSearchRemoteDataSource,

@@ -33,10 +33,10 @@ class MockAyahSearchRemoteDataSource extends _i1.Mock
   }
 
   @override
-  _i4.Future<_i2.AyahModel> getArabicAyah(String? query) =>
-      (super.noSuchMethod(Invocation.method(#getArabicAyah, [query]),
+  _i4.Future<_i2.AyahModel> getArabicAyah({String? query}) => (super
+          .noSuchMethod(Invocation.method(#getArabicAyah, [], {#query: query}),
               returnValue: Future<_i2.AyahModel>.value(_FakeAyahModel_0()))
-          as _i4.Future<_i2.AyahModel>);
+      as _i4.Future<_i2.AyahModel>);
   @override
   _i4.Future<_i2.AyahModel> getTranslationAyah(
           {String? query, String? identifier}) =>
@@ -59,10 +59,10 @@ class MockAyahSearchLocalDataSource extends _i1.Mock
   }
 
   @override
-  _i4.Future<_i2.AyahModel> getArabicAyah(String? query) =>
-      (super.noSuchMethod(Invocation.method(#getArabicAyah, [query]),
+  _i4.Future<_i2.AyahModel> getArabicAyah({String? query}) => (super
+          .noSuchMethod(Invocation.method(#getArabicAyah, [], {#query: query}),
               returnValue: Future<_i2.AyahModel>.value(_FakeAyahModel_0()))
-          as _i4.Future<_i2.AyahModel>);
+      as _i4.Future<_i2.AyahModel>);
   @override
   _i4.Future<_i2.AyahModel> getTranslationAyah(
           {String? query, String? identifier}) =>
@@ -72,10 +72,9 @@ class MockAyahSearchLocalDataSource extends _i1.Mock
               returnValue: Future<_i2.AyahModel>.value(_FakeAyahModel_0()))
           as _i4.Future<_i2.AyahModel>);
   @override
-  _i4.Future<void> cacheAyah(_i2.AyahModel? ayahModel) =>
+  _i4.Future<bool> cacheAyah(_i2.AyahModel? ayahModel) =>
       (super.noSuchMethod(Invocation.method(#cacheAyah, [ayahModel]),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+          returnValue: Future<bool>.value(false)) as _i4.Future<bool>);
   @override
   String toString() => super.toString();
 }
