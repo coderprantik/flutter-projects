@@ -1,11 +1,15 @@
-import 'package:ayah_search/core/error/exceptions.dart';
-import 'package:ayah_search/core/network/network_info.dart';
-import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_local_data_source.dart';
-import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_remote_data_source.dart';
-import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
-import 'package:ayah_search/core/error/failures.dart';
-import 'package:ayah_search/features/ayah_search/domain/repositories/ayah_search_repository.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../../../core/error/exceptions.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/network/network_info.dart';
+import '../../domain/entities/ayah.dart';
+import '../../domain/repositories/ayah_search_repository.dart';
+import '../datasources/ayah_search_local_data_source.dart';
+import '../datasources/ayah_search_remote_data_source.dart';
+import '../models/ayah_model.dart';
+
+typedef Future<AyahModel> GetAyah();
 
 class AyahSearchRepositoryImpl implements AyahSearchRepository {
   final AyahSearchRemoteDataSource remoteDataSource;
@@ -20,44 +24,44 @@ class AyahSearchRepositoryImpl implements AyahSearchRepository {
 
   @override
   Future<Either<Failure, Ayah>> getArabicAyah(String query) async {
-    if (await localDataSource.hasAyah(query)) {
-      try {
-        final ayah = await localDataSource.getArabicAyah(query);
-        return Right(ayah);
-      } on CacheException {
-        print('localDataSource.getArabicAyah: CacheException');
-      }
-    } else if (await networkInfo.hasConnection) {
-      try {
-        final ayah = await remoteDataSource.getArabicAyah(query);
-        localDataSource.cacheAyah(ayah);
-        return Right(ayah);
-      } on ServerException {
-        return Left(ServerFailure());
-      }
-    }
-    return Left(CacheFailure());
+    return _getAyah(
+      local: () => localDataSource.getArabicAyah(query),
+      remote: () => remoteDataSource.getArabicAyah(query),
+      query: query,
+    );
   }
 
   @override
   Future<Either<Failure, Ayah>> getTranslationAyah(
       {required String query, required String identifier}) async {
+    return _getAyah(
+      local: () => localDataSource.getTranslationAyah(
+        query: query,
+        identifier: identifier,
+      ),
+      remote: () => remoteDataSource.getTranslationAyah(
+        query: query,
+        identifier: identifier,
+      ),
+      query: query,
+    );
+  }
+
+  Future<Either<Failure, Ayah>> _getAyah({
+    required GetAyah local,
+    required GetAyah remote,
+    required String query,
+  }) async {
     if (await localDataSource.hasAyah(query)) {
       try {
-        final ayah = await localDataSource.getTranslationAyah(
-          query: query,
-          identifier: identifier,
-        );
+        final ayah = await local();
         return Right(ayah);
       } on CacheException {
         print('getTranslationAyah: CacheException');
       }
     } else if (await networkInfo.hasConnection) {
       try {
-        final ayah = await remoteDataSource.getTranslationAyah(
-          query: query,
-          identifier: identifier,
-        );
+        final ayah = await remote();
         localDataSource.cacheAyah(ayah);
         return Right(ayah);
       } on ServerException {
