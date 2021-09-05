@@ -1,12 +1,14 @@
 import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
+import 'package:ayah_search/features/ayah_search/domain/repositories/ayah_search_repository.dart';
 import 'package:ayah_search/features/ayah_search/domain/usecases/get_arabic_ayah.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'ayah_search_repository.mocks.dart';
 
-// @GenerateMocks([AyahSearchRepository])
+@GenerateMocks([AyahSearchRepository])
 void main() {
   late GetArabicAyah usecase;
   late MockAyahSearchRepository mockAyahSearchRepository;
@@ -34,13 +36,13 @@ void main() {
     'should get arabic Ayah for the query from repository',
     () async {
       // arrange
-      when(mockAyahSearchRepository.getArabicAyah(any))
+      when(mockAyahSearchRepository.getArabicAyah(query: anyNamed('query')))
           .thenAnswer((_) async => Right(tAyah));
       // act
       final result = await usecase(tQuery);
       // assert
       expect(result, Right(tAyah));
-      verify(mockAyahSearchRepository.getArabicAyah(tQuery));
+      verify(mockAyahSearchRepository.getArabicAyah(query: anyNamed('query')));
       verifyNoMoreInteractions(mockAyahSearchRepository);
     },
   );

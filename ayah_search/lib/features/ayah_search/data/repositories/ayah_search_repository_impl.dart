@@ -18,7 +18,7 @@ class AyahSearchRepositoryImpl implements AyahSearchRepository {
   });
 
   @override
-  Future<Either<Failure, Ayah>> getArabicAyah(String query) {
+  Future<Either<Failure, Ayah>> getArabicAyah({required String query}) {
     // TODO: implement getArabicAyah
     throw UnimplementedError();
   }

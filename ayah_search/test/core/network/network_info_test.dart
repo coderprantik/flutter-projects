@@ -3,7 +3,7 @@ import 'package:ayah_search/core/network/network_info.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-import 'network_info_test.mocks.dart';
+import 'connection_checker.mocks.dart';
 
 void main() {
   late NetworkInfoImpl networkInfoImpl;
