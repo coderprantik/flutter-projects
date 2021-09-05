@@ -55,6 +55,30 @@ void main() {
     );
   });
 
+  group('fromCachedJson', () {
+    final cachedJsonString = fixture('ayah_cached.json');
+    final cachedJson = jsonDecode(cachedJsonString);
+
+    test(
+      'should return a valid model from cached JSON',
+      () async {
+        // act
+        final result = AyahModel.fromCachedJson(cachedJson);
+        // assert
+        expect(result, tAyahModel);
+      },
+    );
+    test(
+      'should return a valid model from cached Raw JSON',
+      () async {
+        // act
+        final result = AyahModel.fromCachedRawJson(cachedJsonString);
+        // assert
+        expect(result, tAyahModel);
+      },
+    );
+  });
+
   group('toJson', () {
     test(
       'should return a valid JSON Map with proper data ',

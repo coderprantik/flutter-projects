@@ -123,13 +123,15 @@ void main() {
         when(mockSharedPreferences.setString(any, any))
             .thenAnswer((_) async => true);
         // act
-        final result = await dataSource.cacheAyah(tAyahModel);
-        // assert
-        final expectedJson = tAyahModel.toJson();
-        expectedJson['type'] = 'quran';
-        String expectedJsonString = jsonEncode(expectedJson);
+        final cachedJson = tAyahModel.toJson();
+        cachedJson['type'] = 'quran';
 
+        final result = await dataSource.cacheAyah(
+          AyahModel.fromCachedJson(cachedJson),
+        );
+        // assert
         String expectedKey = tKey;
+        String expectedJsonString = jsonEncode(cachedJson);
 
         verify(
           mockSharedPreferences.setString(expectedKey, expectedJsonString),
