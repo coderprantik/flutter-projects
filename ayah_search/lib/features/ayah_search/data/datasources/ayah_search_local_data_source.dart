@@ -34,9 +34,13 @@ class AyahSearchLocalDataSourceImpl implements AyahSearchLocalDataSource {
   }
 
   @override
-  Future<bool> cacheAyah(AyahModel ayahModel) {
-    // TODO: implement cacheAyah
-    throw UnimplementedError();
+  Future<bool> cacheAyah(AyahModel ayahModel) async {
+    String key = '${ayahModel.surahNumber}:${ayahModel.ayahNumber}';
+    if (ayahModel.type != 'quran') key = '$key/${ayahModel.identifier}';
+
+    final jsonString = ayahModel.toRawJson();
+    
+    return await sharedPreferences.setString(key, jsonString);
   }
 
   Future<AyahModel> _getAyah(String key) async {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ayah_search/core/error/exceptions.dart';
 import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_local_data_source.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
@@ -25,9 +27,9 @@ void main() {
     fixture('ayah_remote.json'),
   ); // this model is same to the model from ayah_cached.json
   final tIdentifier = tAyahModel.identifier;
+  final tKey = '${tAyahModel.surahNumber}:${tAyahModel.ayahNumber}';
 
   group('getArabicAyah', () {
-    final tKey = '${tAyahModel.surahNumber}:${tAyahModel.ayahNumber}';
     test(
       'should return Ayah from SharedPreferences when data is present',
       () async {
@@ -37,8 +39,10 @@ void main() {
         // act
         final result = await dataSource.getArabicAyah(query: tQuery);
         // assert
+        final expectedKey = tKey;
+
         expect(result, equals(tAyahModel));
-        verify(mockSharedPreferences.getString(tKey));
+        verify(mockSharedPreferences.getString(expectedKey));
       },
     );
 
@@ -58,8 +62,6 @@ void main() {
     );
   });
   group('getTranslationAyah', () {
-    final tKey =
-        '${tAyahModel.surahNumber}:${tAyahModel.ayahNumber}/$tIdentifier';
     test(
       'should return Ayah from SharedPreferences when data is present',
       () async {
@@ -72,8 +74,10 @@ void main() {
           identifier: tIdentifier,
         );
         // assert
+        final expectedKey = '$tKey/$tIdentifier';
+
         expect(result, equals(tAyahModel));
-        verify(mockSharedPreferences.getString(tKey));
+        verify(mockSharedPreferences.getString(expectedKey));
       },
     );
 
@@ -89,6 +93,48 @@ void main() {
           () => call(query: tQuery, identifier: tIdentifier),
           throwsA(TypeMatcher<CacheException>()),
         );
+      },
+    );
+  });
+
+  group('cacheAyah', () {
+    test(
+      'should call SharedPreferneces to cache the data',
+      () async {
+        // arrange
+        when(mockSharedPreferences.setString(any, any))
+            .thenAnswer((_) async => true);
+        // act
+        final result = await dataSource.cacheAyah(tAyahModel);
+        // assert
+        final expectedJsonString = tAyahModel.toRawJson();
+        String expectedKey = '$tKey/$tIdentifier';
+
+        verify(
+          mockSharedPreferences.setString(expectedKey, expectedJsonString),
+        );
+        expect(result, true);
+      },
+    );
+    test(
+      "should call SharedPreferneces to cache the data & type is 'quran'",
+      () async {
+        // arrange
+        when(mockSharedPreferences.setString(any, any))
+            .thenAnswer((_) async => true);
+        // act
+        final result = await dataSource.cacheAyah(tAyahModel);
+        // assert
+        final expectedJson = tAyahModel.toJson();
+        expectedJson['type'] = 'quran';
+        String expectedJsonString = jsonEncode(expectedJson);
+
+        String expectedKey = tKey;
+
+        verify(
+          mockSharedPreferences.setString(expectedKey, expectedJsonString),
+        );
+        expect(result, true);
       },
     );
   });
