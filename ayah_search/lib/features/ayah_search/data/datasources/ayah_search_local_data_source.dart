@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:ayah_search/core/error/exceptions.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,21 +23,41 @@ class AyahSearchLocalDataSourceImpl implements AyahSearchLocalDataSource {
   AyahSearchLocalDataSourceImpl({required this.sharedPreferences});
 
   @override
+  Future<AyahModel> getArabicAyah({required String query}) => _getAyah(query);
+
+  @override
+  Future<AyahModel> getTranslationAyah({
+    required String query,
+    required String identifier,
+  }) {
+    return _getAyah('$query/$identifier');
+  }
+
+  @override
   Future<bool> cacheAyah(AyahModel ayahModel) {
     // TODO: implement cacheAyah
     throw UnimplementedError();
   }
 
-  @override
-  Future<AyahModel> getArabicAyah({required String query}) {
-    // TODO: implement getArabicAyah
-    throw UnimplementedError();
-  }
+  Future<AyahModel> _getAyah(String key) async {
+    final jsonString = sharedPreferences.getString(key);
 
-  @override
-  Future<AyahModel> getTranslationAyah({required String query, required String identifier}) {
-    // TODO: implement getTranslationAyah
-    throw UnimplementedError();
-  }
+    if (jsonString == null) throw CacheException();
 
+    final Map<String, dynamic> json = jsonDecode(jsonString);
+
+    return AyahModel(
+      surahNumber: json['surahNumber'],
+      ayahNumber: json['ayahNumber'],
+      surahName: json['surahName'],
+      surahNameTranslation: json['surahNameTranslation'],
+      revelationType: json['revelationType'],
+      sajda: json['sajda'],
+      identifier: json['identifier'],
+      type: json['type'],
+      editionName: json['editionName'],
+      direction: json['direction'],
+      text: json['text'],
+    );
+  }
 }
