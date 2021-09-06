@@ -17,4 +17,10 @@ class AyahSearchController extends GetxController {
     _getArabicAyah = getArabicAyah;
     _getTranslationAyah = getTranslationAyah;
   }
+
+  final state = Rx(Empty());
+
+  Future<void> getArabicAyah({required String query}) async {}
+
+  Future<void> getTranslationAyah(String query) async {}
 }
