@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ayah_search/core/error/exceptions.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
 import 'package:http/http.dart';
@@ -35,11 +37,12 @@ class AyahSearchRemoteDataSourceImpl implements AyahSearchRemoteDataSource {
 
   Future<AyahModel> _getAyah(Uri uri) async {
     final response = await client.get(uri, headers: _headers);
+    final json = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      return AyahModel.fromRawJson(response.body);
+      return AyahModel.fromJson(json);
     } else if (response.statusCode == 404) {
-      throw ServerException(response.body);
+      throw ServerException(json['data']);
     } else {
       throw ServerException(response.reasonPhrase ?? 'Something went wrong!');
     }
