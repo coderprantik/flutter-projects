@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:ayah_search/core/error/exceptions.dart';
-import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
 import 'package:http/http.dart';
+
+import '../../../../core/error/exceptions.dart';
+import '../models/ayah_model.dart';
 
 abstract class AyahSearchRemoteDataSource {
   Future<AyahModel> getArabicAyah({

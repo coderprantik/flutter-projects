@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
+import '../../domain/entities/ayah.dart';
 
 class AyahModel extends Ayah {
   AyahModel({

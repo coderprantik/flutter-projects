@@ -1,14 +1,15 @@
 import 'dart:io';
 
-import 'package:ayah_search/core/error/exceptions.dart';
-import 'package:ayah_search/core/network/network_info.dart';
-import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_local_data_source.dart';
-import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_remote_data_source.dart';
-import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
-import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
-import 'package:ayah_search/core/error/failures.dart';
-import 'package:ayah_search/features/ayah_search/domain/repositories/ayah_search_repository.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../../../core/error/exceptions.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/network/network_info.dart';
+import '../../domain/entities/ayah.dart';
+import '../../domain/repositories/ayah_search_repository.dart';
+import '../datasources/ayah_search_local_data_source.dart';
+import '../datasources/ayah_search_remote_data_source.dart';
+import '../models/ayah_model.dart';
 
 typedef Future<AyahModel> _GetAyah();
 
