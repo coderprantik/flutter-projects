@@ -21,11 +21,20 @@ class AyahSearchRemoteDataSourceImpl implements AyahSearchRemoteDataSource {
   AyahSearchRemoteDataSourceImpl({required this.client});
 
   @override
-  Future<AyahModel> getArabicAyah({required String query}) async {
-    final response = await client.get(
-      Uri.parse('$_endPoint/$query'),
-      headers: _headers,
-    );
+  Future<AyahModel> getArabicAyah({required String query}) {
+    return _getAyah(Uri.parse('$_endPoint/$query'));
+  }
+
+  @override
+  Future<AyahModel> getTranslationAyah({
+    required String query,
+    required String identifier,
+  }) {
+    return _getAyah(Uri.parse('$_endPoint/$query/$identifier'));
+  }
+
+  Future<AyahModel> _getAyah(Uri uri) async {
+    final response = await client.get(uri, headers: _headers);
 
     if (response.statusCode == 200) {
       return AyahModel.fromRawJson(response.body);
@@ -34,12 +43,5 @@ class AyahSearchRemoteDataSourceImpl implements AyahSearchRemoteDataSource {
     } else {
       throw ServerException(response.reasonPhrase ?? 'Something went wrong!');
     }
-  }
-
-  @override
-  Future<AyahModel> getTranslationAyah(
-      {required String query, required String identifier}) {
-    // TODO: implement getTranslationAyah
-    throw UnimplementedError();
   }
 }

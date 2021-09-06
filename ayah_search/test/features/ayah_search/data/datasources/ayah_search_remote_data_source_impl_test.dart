@@ -27,6 +27,7 @@ void main() {
   final tQuery = '1:2';
   final jsonString = fixture('ayah_remote.json');
   final tAyahModel = AyahModel.fromRawJson(jsonString);
+  final tIdentifier = tAyahModel.identifier;
 
   void setUpMockClientSuccess200() {
     when(mockClient.get(any, headers: anyNamed('headers'))).thenAnswer(
@@ -104,6 +105,75 @@ void main() {
         // assert
         expect(
           () => call(query: tQuery),
+          throwsA(TypeMatcher<io.SocketException>()),
+        );
+      },
+    );
+  });
+  group('getTranslationAyah', () {
+    test(
+      '''should perform a GET request on a URL with query
+      being the endpoint and with application/json header''',
+      () async {
+        // arrange
+        setUpMockClientSuccess200();
+        // act
+        await dataSource.getTranslationAyah(
+          query: tQuery,
+          identifier: tIdentifier,
+        );
+        // assert
+        verify(mockClient.get(
+          Uri.parse('$endPoint/$tQuery/$tIdentifier'),
+          headers: headers,
+        ));
+      },
+    );
+
+    test(
+      'should return Ayah Model when the response code is 200 (success)',
+      () async {
+        // arrange
+        setUpMockClientSuccess200();
+        // act
+        final result = await dataSource.getTranslationAyah(
+          query: tQuery,
+          identifier: tIdentifier,
+        );
+        // assert
+        expect(result, equals(tAyahModel));
+      },
+    );
+
+    test(
+      '''should throw a ServerException with message
+       when the response code is 404 or other (failure)''',
+      () async {
+        // arrange
+        setUpMockClientFailure404();
+        // act
+        final call = dataSource.getTranslationAyah;
+        // assert
+        expect(
+          () => call(query: tQuery, identifier: tIdentifier),
+          throwsA(TypeMatcher<ServerException>()),
+        );
+      },
+    );
+
+    test(
+      'should throw SocketException when there is no internet',
+      () async {
+        // arrange
+        when(mockClient.get(
+          Uri.parse('$endPoint/$tQuery/$tIdentifier'),
+          headers: anyNamed('headers'),
+        )).thenThrow(io.SocketException('No Inernet'));
+        // act
+        final call = dataSource.getTranslationAyah;
+        // assert
+        expect(
+          () => call(query: tQuery, identifier: tIdentifier),
           throwsA(TypeMatcher<io.SocketException>()),
         );
       },
