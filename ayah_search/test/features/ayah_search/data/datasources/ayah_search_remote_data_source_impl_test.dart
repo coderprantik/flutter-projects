@@ -5,13 +5,12 @@ import 'package:ayah_search/features/ayah_search/data/datasources/ayah_search_re
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
 import 'http_client.mocks.dart';
 
-@GenerateMocks([Client])
+// @GenerateMocks([Client])
 void main() {
   late AyahSearchRemoteDataSourceImpl dataSource;
   late MockClient mockClient;

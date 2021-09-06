@@ -5,6 +5,7 @@
 import 'dart:async' as _i5;
 
 import 'package:ayah_search/core/error/failures.dart' as _i6;
+import 'package:ayah_search/core/utils/input_formatter.dart' as _i9;
 import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart'
     as _i7;
 import 'package:ayah_search/features/ayah_search/domain/repositories/ayah_search_repository.dart'
@@ -70,6 +71,27 @@ class MockGetTranslationAyah extends _i1.Mock
               returnValue: Future<_i3.Either<_i6.Failure, _i7.Ayah>>.value(
                   _FakeEither_1<_i6.Failure, _i7.Ayah>()))
           as _i5.Future<_i3.Either<_i6.Failure, _i7.Ayah>>);
+  @override
+  String toString() => super.toString();
+}
+
+/// A class which mocks [InputFormatter].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockInputFormatter extends _i1.Mock implements _i9.InputFormatter {
+  MockInputFormatter() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool validate(String? input) =>
+      (super.noSuchMethod(Invocation.method(#validate, [input]),
+          returnValue: false) as bool);
+  @override
+  _i3.Either<_i6.Failure, String> format(String? input) =>
+      (super.noSuchMethod(Invocation.method(#format, [input]),
+              returnValue: _FakeEither_1<_i6.Failure, String>())
+          as _i3.Either<_i6.Failure, String>);
   @override
   String toString() => super.toString();
 }
