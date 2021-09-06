@@ -1,5 +1,5 @@
+import 'package:ayah_search/core/utils/input_formatter.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
-import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
 import 'package:ayah_search/features/ayah_search/presentation/controller/ayah_search_controller.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,7 +30,7 @@ void main() {
   });
 
   final tQuery = '1:2';
-  final Ayah tAyah = AyahModel.fromRawJson(fixture('ayah_remote.json'));
+  final tAyah = AyahModel.fromRawJson(fixture('ayah_remote.json'));
 
   test(
     'should state be Empty at intial',
@@ -42,15 +42,42 @@ void main() {
     },
   );
 
+  /// set [textEditingController]'s text = tQuery
+  setUp(() => controller.textEditingController.text = tQuery);
+
   group('getArabicAyah', () {
+    test(
+      'should call InputFormatter to validate & format the input',
+      () async {
+        when(mockInputFormatter.format(any)).thenReturn(Right(tQuery));
+        // act
+        await controller.getArabicAyah();
+        // assert
+        verify(mockInputFormatter.format(tQuery));
+      },
+    );
+    test(
+      'should emit [Error] state when the input is invalid with proper message',
+      () async {
+        // arrange
+        when(mockInputFormatter.format(any)).thenReturn(
+          Left(InvalidInputFailure()),
+        );
+        // act
+        await controller.getArabicAyah();
+        // assert
+        expect(controller.state.value, equals(Error(MESSAGE.INVALID_INPUT)));
+      },
+    );
     test(
       'should get data from getArabicAyah usecase',
       () async {
         // arrange
         when(mockGetArabicAyah(any)).thenAnswer((_) async => Right(tAyah));
         // act
-        final result = await controller.getArabicAyah(query: tQuery);
+        await controller.getArabicAyah();
         // assert
+        verify(mockGetArabicAyah(tQuery));
       },
     );
   });

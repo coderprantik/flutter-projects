@@ -19,3 +19,12 @@ class Loaded extends AyahSearchState {
   @override
   List<Object> get props => [ayah];
 }
+
+class Error extends AyahSearchState {
+  final String message;
+
+  Error(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
