@@ -43,7 +43,7 @@ void main() {
 
   void setUpMockClientFailure404() {
     when(mockClient.get(any, headers: anyNamed('headers'))).thenAnswer(
-      (_) async => Response('No data found!', 404),
+      (_) async => Response('{"data": "No data found"}', 404),
     );
   }
 
