@@ -3,11 +3,14 @@ import 'package:ayah_search/core/utils/input_formatter.dart';
 import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
 import 'package:ayah_search/features/ayah_search/domain/usecases/get_arabic_ayah.dart';
 import 'package:ayah_search/features/ayah_search/domain/usecases/get_translation_ayah.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 part 'ayah_search_state.dart';
+
+typedef Future<Either<Failure, Ayah>> _ArabicOrTranslationChooser(String query);
 
 class AyahSearchController extends GetxController {
   late GetArabicAyah _getArabicAyah;
@@ -29,25 +32,31 @@ class AyahSearchController extends GetxController {
 
   final Rx<AyahSearchState> state = Rx(Empty());
 
-  Future<void> getArabicAyah() async {
+  Future<void> getArabicAyah() => _getAyah((query) => _getArabicAyah(query));
+
+  Future<void> getTranslationAyah() {
+    return _getAyah((query) => _getTranslationAyah(Params(query: query)));
+  }
+
+  Future<void> _getAyah(
+    _ArabicOrTranslationChooser getArabicOrTranslationAyah,
+  ) async {
     final failureOrQuery = _inputFormatter.format(input);
 
     await failureOrQuery.fold(
       (failure) async => state.value = Error(MESSAGE.INVALID_INPUT),
       (query) async {
         state.value = Loading();
-        final ayah = await _getArabicAyah(query);
+        final ayah = await getArabicOrTranslationAyah(query);
         ayah.fold(
-          (failure) => state.value = Error(_getMessage(failure)),
+          (failure) => state.value = Error(_mapFailureMessage(failure)),
           (ayah) => state.value = Loaded(ayah),
         );
       },
     );
   }
 
-  Future<void> getTranslationAyah() async {}
-
-  _getMessage(Failure failure) {
+  _mapFailureMessage(Failure failure) {
     if (failure is ServerFailure)
       return failure.message;
     else if (failure is CacheFailure)

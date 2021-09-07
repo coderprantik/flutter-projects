@@ -2,6 +2,7 @@
 import 'package:ayah_search/core/error/failures.dart';
 import 'package:ayah_search/core/utils/input_formatter.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
+import 'package:ayah_search/features/ayah_search/domain/usecases/get_translation_ayah.dart';
 import 'package:ayah_search/features/ayah_search/presentation/controller/ayah_search_controller.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -139,6 +140,89 @@ void main() {
           final result = [];
           controller.state.listen((state) => result.add(state));
           await controller.getArabicAyah();
+          // assert
+          final expected = [Loading(), Error(MESSAGE.CACHE_FAILURE)];
+
+          expect(result, expected);
+        },
+      );
+    });
+  });
+
+  group('getTranslationAyah', () {
+    void setUpMockGetTranslationAyahSuccess() {
+      when(mockGetTranslationAyah(any)).thenAnswer(
+        (_) async => Right(tAyah),
+      );
+    }
+
+    void setUpMockGetTranslationAyahFailed() {
+      when(mockGetTranslationAyah(any)).thenAnswer(
+        (_) async => Left(CacheFailure()),
+      );
+    }
+
+    test(
+      'should call InputFormatter to validate & format the input',
+      () async {
+        setUpMockInputFormatterSuccess();
+        setUpMockGetTranslationAyahSuccess();
+        // act
+        await controller.getTranslationAyah();
+        // assert
+        verify(mockInputFormatter.format(tQuery));
+      },
+    );
+    test(
+      'should show [Error] state when the input is invalid with proper message',
+      () async {
+        // arrange
+        setUpMockInputFormatterFailed();
+        // act
+        await controller.getTranslationAyah();
+        // assert
+        expect(controller.state.value, equals(Error(MESSAGE.INVALID_INPUT)));
+      },
+    );
+
+    runTestsWhenInputIsValid(() {
+      test(
+        'should get data from GetTranslationAyah usecase',
+        () async {
+          // arrange
+          setUpMockGetTranslationAyahSuccess();
+          // act
+          await controller.getTranslationAyah();
+          // assert
+          verify(mockGetTranslationAyah(Params(query: tQuery)));
+        },
+      );
+
+      test(
+        'should show [Loading, Loaded] states when data is gotten successfully',
+        () async {
+          // arrange
+          setUpMockGetTranslationAyahSuccess();
+          // act
+          final result = [];
+          controller.state.listen((state) => result.add(state));
+          await controller.getTranslationAyah();
+          // assert
+          final expected = [Loading(), Loaded(tAyah)];
+
+          expect(result, expected);
+        },
+      );
+      test(
+        '''should show [Loading, Error] states with message
+      when getting data is failed''',
+        () async {
+          // arrange
+          setUpMockGetTranslationAyahFailed();
+          // act
+          final result = [];
+          controller.state.listen((state) => result.add(state));
+          await controller.getTranslationAyah();
           // assert
           final expected = [Loading(), Error(MESSAGE.CACHE_FAILURE)];
 
