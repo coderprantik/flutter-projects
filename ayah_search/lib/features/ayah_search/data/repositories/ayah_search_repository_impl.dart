@@ -16,12 +16,10 @@ typedef Future<AyahModel> _GetAyah();
 class AyahSearchRepositoryImpl implements AyahSearchRepository {
   final AyahSearchRemoteDataSource remoteDataSource;
   final AyahSearchLocalDataSource localDataSource;
-  final NetworkInfo networkInfo;
 
   AyahSearchRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
-    required this.networkInfo,
   });
 
   @override

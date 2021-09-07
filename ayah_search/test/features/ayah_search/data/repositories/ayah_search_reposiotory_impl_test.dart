@@ -18,18 +18,15 @@ import 'ayah_search_reposiotory_impl.mocks.dart';
 void main() {
   late MockAyahSearchRemoteDataSource mockRemoteDataSource;
   late MockAyahSearchLocalDataSource mockLocalDataSource;
-  late MockNetworkInfo mockNetworkInfo;
   late AyahSearchRepositoryImpl repository;
   late String tIdentifier;
 
   setUp(() {
     mockRemoteDataSource = MockAyahSearchRemoteDataSource();
     mockLocalDataSource = MockAyahSearchLocalDataSource();
-    mockNetworkInfo = MockNetworkInfo();
     repository = AyahSearchRepositoryImpl(
       remoteDataSource: mockRemoteDataSource,
       localDataSource: mockLocalDataSource,
-      networkInfo: mockNetworkInfo,
     );
     tIdentifier = 'bn.bengali';
   });
