@@ -1,3 +1,5 @@
+
+// @GenerateMocks([GetArabicAyah, GetTranslationAyah, InputFormatter])
 import 'package:ayah_search/core/utils/input_formatter.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
 import 'package:ayah_search/features/ayah_search/presentation/controller/ayah_search_controller.dart';
@@ -9,7 +11,6 @@ import 'package:mockito/mockito.dart';
 import '../../../../fixtures/fixture_reader.dart';
 import 'ayah_search_controller.mocks.dart';
 
-// @GenerateMocks([GetArabicAyah, GetTranslationAyah, InputFormatter])
 void main() {
   late AyahSearchController controller;
   late MockGetArabicAyah mockGetArabicAyah;
@@ -70,9 +71,10 @@ void main() {
       },
     );
     test(
-      'should get data from getArabicAyah usecase',
+      'should get data from GetArabicAyah usecase',
       () async {
         // arrange
+        when(mockInputFormatter.format(any)).thenReturn(Right(tQuery));
         when(mockGetArabicAyah(any)).thenAnswer((_) async => Right(tAyah));
         // act
         await controller.getArabicAyah();

@@ -21,7 +21,4 @@ class InputFormatter {
   }
 }
 
-class InvalidInputFailure extends Failure {
-  @override
-  List<Object?> get props => [];
-}
+class InvalidInputFailure extends Failure {}
