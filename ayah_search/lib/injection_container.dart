@@ -6,7 +6,9 @@ import 'package:ayah_search/features/ayah_search/data/repositories/ayah_search_r
 import 'package:ayah_search/features/ayah_search/domain/repositories/ayah_search_repository.dart';
 import 'package:ayah_search/features/ayah_search/domain/usecases/get_arabic_ayah.dart';
 import 'package:ayah_search/features/ayah_search/domain/usecases/get_translation_ayah.dart';
+import 'package:ayah_search/features/ayah_search/presentation/controller/ayah_search_controller.dart';
 import 'package:connection_checker/connection_checker.dart';
+import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,4 +47,12 @@ Future<void> setUp() async {
   locator.registerLazySingleton(() => sharedPreferences);
 
   locator.registerLazySingleton(() => Client());
+
+  // Controllers
+  Get.lazyPut(() => AyahSearchController());
+  Get.find<AyahSearchController>().init(
+    getArabicAyah: locator(),
+    getTranslationAyah: locator(),
+    inputFormatter: locator(),
+  );
 }
