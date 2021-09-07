@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Ayah Search App',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: 'Rubik'),
       initialRoute: Routes.AYAH_SEARCH,
       builder: (context, child) => ResponsiveBuilder(child: child),
       getPages: AppPages.pages,
