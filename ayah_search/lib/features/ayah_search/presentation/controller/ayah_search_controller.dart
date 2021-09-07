@@ -29,11 +29,11 @@ class AyahSearchController extends GetxController {
   final Rx<AyahSearchState> state = Rx(Empty());
 
   Future<void> getArabicAyah() async {
-    final failureOrString = _inputFormatter.format(input);
+    final failureOrQuery = _inputFormatter.format(input);
 
-    failureOrString.fold(
-      (failure) => state.value = Error(MESSAGE.INVALID_INPUT),
-      (query) {},
+    await failureOrQuery.fold(
+      (failure) async => state.value = Error(MESSAGE.INVALID_INPUT),
+      (query) async => await _getArabicAyah(query),
     );
   }
 

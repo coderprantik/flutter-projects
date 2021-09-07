@@ -1,4 +1,3 @@
-
 // @GenerateMocks([GetArabicAyah, GetTranslationAyah, InputFormatter])
 import 'package:ayah_search/core/utils/input_formatter.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
@@ -50,6 +49,7 @@ void main() {
     test(
       'should call InputFormatter to validate & format the input',
       () async {
+        when(mockInputFormatter.validate(any)).thenReturn(true);
         when(mockInputFormatter.format(any)).thenReturn(Right(tQuery));
         // act
         await controller.getArabicAyah();
