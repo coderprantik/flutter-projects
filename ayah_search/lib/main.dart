@@ -1,6 +1,9 @@
+import 'package:ayah_search/app/responsive/responsive_builder.dart';
+import 'package:ayah_search/app/router/app_pages.dart';
 import 'package:ayah_search/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +22,12 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter App',
+    return GetMaterialApp(
+      title: 'Ayah Search App',
       debugShowCheckedModeBanner: false,
-      home: Scaffold(),
+      initialRoute: Routes.AYAH_SEARCH,
+      builder: (context, child) => ResponsiveBuilder(child: child),
+      getPages: AppPages.pages,
     );
   }
 }
