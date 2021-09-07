@@ -13,7 +13,7 @@ class AyahSearchController extends GetxController {
   late GetTranslationAyah _getTranslationAyah;
   late InputFormatter _inputFormatter;
 
-  AyahSearchController({
+  void init({
     required GetArabicAyah getArabicAyah,
     required GetTranslationAyah getTranslationAyah,
     required InputFormatter inputFormatter,

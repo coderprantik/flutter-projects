@@ -21,12 +21,13 @@ void main() {
     mockGetTranslationAyah = MockGetTranslationAyah();
     mockInputFormatter = MockInputFormatter();
     // setuping controller
-    Get.lazyPut(() => AyahSearchController(
-          getArabicAyah: mockGetArabicAyah,
-          getTranslationAyah: mockGetTranslationAyah,
-          inputFormatter: mockInputFormatter,
-        ));
+    Get.lazyPut(() => AyahSearchController());
     controller = Get.find<AyahSearchController>();
+    controller.init(
+      getArabicAyah: mockGetArabicAyah,
+      getTranslationAyah: mockGetTranslationAyah,
+      inputFormatter: mockInputFormatter,
+    );
   });
 
   final tQuery = '1:2';
@@ -46,11 +47,25 @@ void main() {
   setUp(() => controller.textEditingController.text = tQuery);
 
   group('getArabicAyah', () {
+    void setUpMockInputFormatterSuccess() {
+      when(mockInputFormatter.format(any)).thenReturn(Right(tQuery));
+    }
+
+    void setUpMockInputFormatterFailed() {
+      when(mockInputFormatter.format(any)).thenReturn(
+        Left(InvalidInputFailure()),
+      );
+    }
+
+    void setUpMockGetArabicAyahSuccess() {
+      when(mockGetArabicAyah(any)).thenAnswer((_) async => Right(tAyah));
+    }
+
     test(
       'should call InputFormatter to validate & format the input',
       () async {
-        when(mockInputFormatter.validate(any)).thenReturn(true);
-        when(mockInputFormatter.format(any)).thenReturn(Right(tQuery));
+        setUpMockInputFormatterSuccess();
+        setUpMockGetArabicAyahSuccess();
         // act
         await controller.getArabicAyah();
         // assert
@@ -61,9 +76,7 @@ void main() {
       'should emit [Error] state when the input is invalid with proper message',
       () async {
         // arrange
-        when(mockInputFormatter.format(any)).thenReturn(
-          Left(InvalidInputFailure()),
-        );
+        setUpMockInputFormatterFailed();
         // act
         await controller.getArabicAyah();
         // assert
@@ -74,8 +87,8 @@ void main() {
       'should get data from GetArabicAyah usecase',
       () async {
         // arrange
-        when(mockInputFormatter.format(any)).thenReturn(Right(tQuery));
-        when(mockGetArabicAyah(any)).thenAnswer((_) async => Right(tAyah));
+        setUpMockInputFormatterSuccess();
+        setUpMockGetArabicAyahSuccess();
         // act
         await controller.getArabicAyah();
         // assert
