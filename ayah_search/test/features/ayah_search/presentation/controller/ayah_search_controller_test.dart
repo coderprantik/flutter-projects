@@ -1,4 +1,5 @@
 // @GenerateMocks([GetArabicAyah, GetTranslationAyah, InputFormatter])
+import 'package:ayah_search/core/error/failures.dart';
 import 'package:ayah_search/core/utils/input_formatter.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
 import 'package:ayah_search/features/ayah_search/presentation/controller/ayah_search_controller.dart';
@@ -33,6 +34,26 @@ void main() {
   final tQuery = '1:2';
   final tAyah = AyahModel.fromRawJson(fixture('ayah_remote.json'));
 
+  void runTestsWhenInputIsValid(Function() body) {
+    group('Input is valid', () {
+      setUp(
+        () => when(mockInputFormatter.format(any)).thenReturn(Right(tQuery)),
+      );
+
+      body();
+    });
+  }
+
+  void setUpMockInputFormatterSuccess() {
+    when(mockInputFormatter.format(any)).thenReturn(Right(tQuery));
+  }
+
+  void setUpMockInputFormatterFailed() {
+    when(mockInputFormatter.format(any)).thenReturn(
+      Left(InvalidInputFailure()),
+    );
+  }
+
   test(
     'should state be Empty at intial',
     () async {
@@ -47,18 +68,14 @@ void main() {
   setUp(() => controller.textEditingController.text = tQuery);
 
   group('getArabicAyah', () {
-    void setUpMockInputFormatterSuccess() {
-      when(mockInputFormatter.format(any)).thenReturn(Right(tQuery));
-    }
-
-    void setUpMockInputFormatterFailed() {
-      when(mockInputFormatter.format(any)).thenReturn(
-        Left(InvalidInputFailure()),
-      );
-    }
-
     void setUpMockGetArabicAyahSuccess() {
       when(mockGetArabicAyah(any)).thenAnswer((_) async => Right(tAyah));
+    }
+
+    void setUpMockGetArabicAyahFailed() {
+      when(mockGetArabicAyah(any)).thenAnswer(
+        (_) async => Left(CacheFailure()),
+      );
     }
 
     test(
@@ -73,7 +90,7 @@ void main() {
       },
     );
     test(
-      'should emit [Error] state when the input is invalid with proper message',
+      'should show [Error] state when the input is invalid with proper message',
       () async {
         // arrange
         setUpMockInputFormatterFailed();
@@ -83,17 +100,51 @@ void main() {
         expect(controller.state.value, equals(Error(MESSAGE.INVALID_INPUT)));
       },
     );
-    test(
-      'should get data from GetArabicAyah usecase',
-      () async {
-        // arrange
-        setUpMockInputFormatterSuccess();
-        setUpMockGetArabicAyahSuccess();
-        // act
-        await controller.getArabicAyah();
-        // assert
-        verify(mockGetArabicAyah(tQuery));
-      },
-    );
+
+    runTestsWhenInputIsValid(() {
+      test(
+        'should get data from GetArabicAyah usecase',
+        () async {
+          // arrange
+          setUpMockGetArabicAyahSuccess();
+          // act
+          await controller.getArabicAyah();
+          // assert
+          verify(mockGetArabicAyah(tQuery));
+        },
+      );
+
+      test(
+        'should show [Loading, Loaded] states when data is gotten successfully',
+        () async {
+          // arrange
+          setUpMockGetArabicAyahSuccess();
+          // act
+          final result = [];
+          controller.state.listen((state) => result.add(state));
+          await controller.getArabicAyah();
+          // assert
+          final expected = [Loading(), Loaded(tAyah)];
+
+          expect(result, expected);
+        },
+      );
+      test(
+        '''should show [Loading, Error] states with message
+      when getting data is failed''',
+        () async {
+          // arrange
+          setUpMockGetArabicAyahFailed();
+          // act
+          final result = [];
+          controller.state.listen((state) => result.add(state));
+          await controller.getArabicAyah();
+          // assert
+          final expected = [Loading(), Error(MESSAGE.CACHE_FAILURE)];
+
+          expect(result, expected);
+        },
+      );
+    });
   });
 }
