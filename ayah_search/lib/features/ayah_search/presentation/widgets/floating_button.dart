@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 
-class FloatingButton extends StatelessWidget {
+class FloatingButton extends StatefulWidget {
   const FloatingButton({
     Key? key,
   }) : super(key: key);
 
   @override
+  _FloatingButtonState createState() => _FloatingButtonState();
+}
+
+class _FloatingButtonState extends State<FloatingButton> {
+  double paddingQuantity = 1;
+
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () => print('floating button'),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      onTapDown: (_) => setState(() {
+        paddingQuantity = 1.3;
+      }),
+      onTapUp: (_) => setState(() {
+        paddingQuantity = 1;
+      }),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(
+          horizontal: 20 * paddingQuantity,
+          vertical: 12 * paddingQuantity,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(30),

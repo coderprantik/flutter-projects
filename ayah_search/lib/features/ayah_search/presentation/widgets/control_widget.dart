@@ -1,6 +1,8 @@
+import 'package:ayah_search/features/ayah_search/presentation/controller/ayah_search_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class ControlWidget extends StatelessWidget {
+class ControlWidget extends GetWidget<AyahSearchController> {
   const ControlWidget({
     Key? key,
   }) : super(key: key);
@@ -30,7 +32,8 @@ class ControlWidget extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: TextField(
-                    onChanged: (value) {},
+                    controller: controller.textEditingController,
+                    onSubmitted: (_) => controller.getArabicAyah(),
                     decoration: InputDecoration(
                       hintText: "Search here... (2:255)",
                       hintStyle: TextStyle(
