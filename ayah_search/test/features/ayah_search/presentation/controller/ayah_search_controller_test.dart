@@ -1,4 +1,6 @@
 // @GenerateMocks([GetArabicAyah, GetTranslationAyah, InputFormatter])
+import 'dart:convert';
+
 import 'package:ayah_search/core/error/failures.dart';
 import 'package:ayah_search/core/utils/input_formatter.dart';
 import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
@@ -34,6 +36,12 @@ void main() {
 
   final tQuery = '1:2';
   final tAyah = AyahModel.fromRawJson(fixture('ayah_remote.json'));
+
+  final json = jsonDecode(fixture('ayah_cached.json'));
+  json['type'] = 'quran';
+  final tArabicAyah = AyahModel.fromCachedJson(json);
+  json['type'] = 'translation';
+  final tTranslationAyah = AyahModel.fromCachedJson(json);
 
   void runTestsWhenInputIsValid(Function() body) {
     group('Input is valid', () {
@@ -227,6 +235,100 @@ void main() {
           final expected = [Loading(), Error(MESSAGE.CACHE_FAILURE)];
 
           expect(result, expected);
+        },
+      );
+    });
+  });
+
+  group('switchType', () {
+    test(
+      'should do no more interactions with usecases when state is not [Loaded]',
+      () async {
+        // arrange
+        controller.state.value = Empty();
+        // act
+        await controller.switchType();
+        // assert
+        verifyNoMoreInteractions(mockGetArabicAyah);
+        verifyNoMoreInteractions(mockGetTranslationAyah);
+      },
+    );
+
+    group('[Loaded] state', () {
+      final json = jsonDecode(fixture('ayah_cached.json'));
+      json['type'] = 'quran';
+      final tArabicAyah = AyahModel.fromCachedJson(json);
+      json['type'] = 'translation';
+      final tTranslationAyah = AyahModel.fromCachedJson(json);
+
+      setUp(() {
+        setUpMockInputFormatterSuccess();
+        when(mockGetArabicAyah(any))
+            .thenAnswer((_) async => Right(tArabicAyah));
+        when(mockGetTranslationAyah(any))
+            .thenAnswer((_) async => Right(tTranslationAyah));
+      });
+
+      test(
+        'should call GetTranslationAyah when loaded ayah type is "quran"',
+        () async {
+          // arrange
+          controller.state.value = Loaded(tArabicAyah);
+          // act
+          await controller.switchType();
+          // assert
+          verify(mockGetTranslationAyah(Params(query: tQuery)));
+          verifyNoMoreInteractions(mockGetArabicAyah);
+        },
+      );
+      test(
+        'should call GetArabicAyah when loaded ayah type is "translation"',
+        () async {
+          // arrange
+          controller.state.value = Loaded(tTranslationAyah);
+          // act
+          await controller.switchType();
+          // assert
+          verify(mockGetArabicAyah(tQuery));
+          verifyNoMoreInteractions(mockGetTranslationAyah);
+        },
+      );
+    });
+  });
+
+  group('getInvertedAyahType', () {
+    test(
+      'should return null when the state is not [Loaded]',
+      () async {
+        // arrange
+        controller.state.value = Empty();
+        // act
+        final result = controller.getInvertedAyahType();
+        // assert
+        expect(result, null);
+      },
+    );
+    group('state is [Loaded]', () {
+      test(
+        'should return "${AyahType.TRANSLATION}" when ayah type is "${AyahType.QURAN}"',
+        () async {
+          // arrange
+          controller.state.value = Loaded(tArabicAyah);
+          // act
+          final result = controller.getInvertedAyahType();
+          // assert
+          expect(result, AyahType.TRANSLATION);
+        },
+      );
+      test(
+        'should return "${AyahType.QURAN}" when ayah type is "${AyahType.TRANSLATION}"',
+        () async {
+          // arrange
+          controller.state.value = Loaded(tTranslationAyah);
+          // act
+          final result = controller.getInvertedAyahType();
+          // assert
+          expect(result, AyahType.QURAN);
         },
       );
     });

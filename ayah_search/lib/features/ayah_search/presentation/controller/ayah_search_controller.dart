@@ -1,5 +1,6 @@
 import 'package:ayah_search/core/error/failures.dart';
 import 'package:ayah_search/core/utils/input_formatter.dart';
+import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
 import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
 import 'package:ayah_search/features/ayah_search/domain/usecases/get_arabic_ayah.dart';
 import 'package:ayah_search/features/ayah_search/domain/usecases/get_translation_ayah.dart';
@@ -67,6 +68,24 @@ class AyahSearchController extends GetxController {
       return MESSAGE.INVALID_INPUT;
     else
       return 'Unexpected failure!';
+  }
+
+  Future<void> switchType() async {
+    if (state.value is! Loaded) return;
+
+    if ((state.value as Loaded).ayah.type == AyahType.QURAN) {
+      await getTranslationAyah();
+    } else {
+      await getArabicAyah();
+    }
+  }
+
+  String? getInvertedAyahType() {
+    if (state.value is! Loaded) return null;
+
+    return (state.value as Loaded).ayah.type == AyahType.QURAN
+        ? AyahType.TRANSLATION
+        : AyahType.QURAN;
   }
 }
 

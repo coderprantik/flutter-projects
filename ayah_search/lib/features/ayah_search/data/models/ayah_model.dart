@@ -117,3 +117,8 @@ class AyahModel extends Ayah {
 
   String toRawJson() => jsonEncode(toJson());
 }
+
+abstract class AyahType {
+  static const QURAN = 'quran';
+  static const TRANSLATION = 'translation';
+}
