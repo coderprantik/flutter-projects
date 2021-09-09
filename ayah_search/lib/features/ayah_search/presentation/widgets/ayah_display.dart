@@ -1,3 +1,4 @@
+import 'package:ayah_search/features/ayah_search/data/models/ayah_model.dart';
 import 'package:ayah_search/features/ayah_search/domain/entities/ayah.dart';
 import 'package:ayah_search/features/ayah_search/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class AyahDisplay extends StatelessWidget {
                         style: TextStyle(fontSize: 26),
                       ),
                 Visibility(
-                  visible: ayah.type == 'translate',
+                  visible: ayah.type == AyahType.TRANSLATION,
                   child: TranslatedBy(name: ayah.editionName),
                 ),
               ],
