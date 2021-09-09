@@ -1,3 +1,4 @@
+import 'package:ayah_search/features/ayah_search/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,7 @@ class EndDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.fromLTRB(12, 0, 12, 12),
       height: Get.height * .92,
       width: 100 + Get.width * .4,
       decoration: BoxDecoration(
@@ -26,6 +28,10 @@ class EndDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             child: Image.asset('assets/icons/app_icon.png'),
+          ),
+          Spacer(),
+          GithubItem(
+            onTap: () {},
           ),
         ],
       ),
