@@ -1,4 +1,6 @@
+import 'package:ayah_search/features/ayah_search/presentation/controller/ayah_search_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class FloatingButton extends StatefulWidget {
   const FloatingButton({
@@ -10,12 +12,13 @@ class FloatingButton extends StatefulWidget {
 }
 
 class _FloatingButtonState extends State<FloatingButton> {
+  final controller = Get.find<AyahSearchController>();
   double paddingQuantity = 1;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => print('floating button'),
+      onTap: controller.switchType,
       onTapDown: (_) => setState(() {
         paddingQuantity = 1.3;
       }),
@@ -44,7 +47,7 @@ class _FloatingButtonState extends State<FloatingButton> {
           children: [
             Icon(Icons.translate),
             const SizedBox(width: 6),
-            Text('Translate'),
+            Text(controller.getInvertedAyahType()?.toUpperCase() ?? ''),
           ],
         ),
       ),

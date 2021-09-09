@@ -25,7 +25,13 @@ class AyahSearchPage extends GetWidget<AyahSearchController> {
           ),
         ),
       ),
-      floatingActionButton: FloatingButton(),
+      floatingActionButton: Obx(
+        () => Visibility(
+          visible:
+              Get.find<AyahSearchController>().getInvertedAyahType() != null,
+          child: FloatingButton(),
+        ),
+      ),
     );
   }
 
