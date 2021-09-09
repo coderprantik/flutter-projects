@@ -1,5 +1,6 @@
 import 'package:ayah_search/features/ayah_search/presentation/controller/ayah_search_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class ControlWidget extends GetWidget<AyahSearchController> {
@@ -55,7 +56,14 @@ class ControlWidget extends GetWidget<AyahSearchController> {
             ),
           ),
         ),
-        IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
+        IconButton(
+          onPressed: controller.openEndDrawer,
+          icon: SvgPicture.asset(
+            'assets/icons/fi-rr-align-right.svg',
+            height: 24,
+            width: 24,
+          ),
+        ),
       ],
     );
   }

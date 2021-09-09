@@ -28,6 +28,7 @@ class AyahSearchController extends GetxController {
     _inputFormatter = inputFormatter;
   }
 
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   final textEditingController = TextEditingController();
   String get input => textEditingController.text;
 
@@ -87,6 +88,8 @@ class AyahSearchController extends GetxController {
         ? AyahType.TRANSLATION
         : AyahType.QURAN;
   }
+
+  void openEndDrawer() => scaffoldKey.currentState?.openEndDrawer();
 }
 
 class MESSAGE {
